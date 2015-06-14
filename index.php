@@ -3,6 +3,7 @@
 	<head>
 		<title>Timer by Sarah Gebauer</title>
 		<meta charset="UTF-8">
+		<link href="style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div id="countDownHolder">
@@ -11,10 +12,8 @@
 			<button name="stopstart" id="stopstart" disabled="">Start</button>
 		</div>
 		<div id="formHolder">
-			<form action="timer.php" method="post">
-				<textarea name="lines"></textarea>
+				<textarea name="lines" id="txtAr"></textarea>
 				<button id="setTimer">Set timer</button>
-			</form>
 		</div>			
 		<script type="text/javascript">
 			var ssBtn = document.getElementById('stopstart');
@@ -22,33 +21,42 @@
 			stBtn.addEventListener("click", timerSetter);
 			var isRunning = false;
 			ssBtn.addEventListener("click", startStopper);
-			var data = <?php if (isset($linesFinArr)) echo json_encode($linesFinArr); else echo json_encode([]) ?>;
+			var data = []; /* [[name, time left s]] */
 			var activityH1 = document.getElementById("activity");
 			var minutesSpan = document.getElementById("minutes");
 			var secondsSpan = document.getElementById("seconds");
+			var txtAr = document.getElementById("txtAr");
 			var pointer = 0;
-			activityH1.innerHTML = data[0][0];
-			minutesSpan.innerHTML = data[0][1];
 			function startStopper() {
 				if (isRunning) {
 					isRunning = false;
-					ssBtn.innerHTML = "Start";
+					ssBtn.innerHTML = "Start";					
 				} else {
 					isRunning = true;
 					ssBtn.innerHTML = "Stop";
+					// tbd recalculation so screen saver isn't problem
 				}
+			}
+			function timerSetter() {
+				var linesAr = txtAr.value.split("\n");
+				var len = linesAr.length;				
+				for (var i = 0; i < len; i++) {
+					data[i] = [];
+					data[i][1] = linesAr[i].slice(0, linesAr[i].indexOf(" "));
+					data[i][0] = linesAr[i].slice(linesAr[i].indexOf(" ")+1);
+				}				
 			}
 			
 			setInterval(function() {
 				if (isRunning) {
-					var minutes = parseInt(minutesSpan.innerHTML);
-					var seconds = parseInt(secondsSpan.innerHTML);
+					var minutes = data[pointer][1]%60;
+					var seconds = data[pointer][1] - minutes;
 					if (seconds == 0) {
 						if (minutes == 0) {
 							pointer++;
-							if (pointer < data.length) {								
+							if (pointer < data.length) {			
 								activityH1.innerHTML = data[pointer][0];
-								minutesSpan.innerHTML = data[pointer][1];
+								minutesSpan.innerHTML = data[pointer][1]%60;
 							} else {
 								activityH1.innerHTML = "All done";
 								secondsSpan.innerHTML = "00";
@@ -62,12 +70,12 @@
 							minutesSpan.innerHTML = minutes;
 						}											
 					} else {
-						seconds--;											
+						data[pointer][1]--;											
 					}
 					if (seconds < 10) {
 							seconds = "0"+seconds;
 						}
-					secondsSpan.innerHTML = seconds;					
+					secondsSpan.innerHTML = seconds;										
 				}
 			}, 1000);
 			
