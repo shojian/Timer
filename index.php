@@ -40,6 +40,7 @@
 					var temp = 0;					
 					for (var i = pointer; i < len; i++) {
 						data[i][2] = Math.floor(Date.now()/1000) + data[i][1]+temp;
+						console.log(data[i][2]);
 						temp += data[i][1];
 					}					
 				}
@@ -88,7 +89,8 @@
 								secondsSpan.innerHTML = "00";
 								isRunning = false;
 								ssBtn.innerHTML = "Start";
-								pointer = 0;								
+								pointer = 0;
+								timerSetter();								
 							}
 						} else {
 							seconds = 59;
