@@ -9,7 +9,10 @@
 		<div id="countDownHolder">
 			<h1 id="activity">All done</h1>
 			<span id="minutes">0</span> : <span id="seconds">00</span>
-			<button name="stopstart" id="stopstart" disabled="">Start</button>
+			<button name="stopstart" id="stopstart" disabled="disabled">Start</button>
+			<div class="meter">
+				<span id="progressBar" style="width: 0%;"></span>
+			</div>
 		</div>
 		<div id="formHolder">
 				<textarea name="lines" id="txtAr"></textarea>
@@ -18,10 +21,11 @@
 		<script type="text/javascript">
 			var ssBtn = document.getElementById('stopstart');
 			var stBtn = document.getElementById('setTimer');
+			var pBar = document.getElementById('progressBar');
 			stBtn.addEventListener("click", timerSetter);
 			var isRunning = false;
 			ssBtn.addEventListener("click", startStopper);
-			var data = []; /* [[name, time left s, computed time end s]] */
+			var data = []; /* [[name, time left s, computed time end s, percentage]] */
 			var activityH1 = document.getElementById("activity");
 			var minutesSpan = document.getElementById("minutes");
 			var secondsSpan = document.getElementById("seconds");
@@ -58,6 +62,7 @@
 					console.log("data[i][2] "+data[i][2]);
 					
 					data[i][0] = linesAr[i].slice(linesAr[i].indexOf(" ")+1);
+					data[i][3] = data[i][1]/100;
 					if (i == 0) {
 						activityH1.innerHTML = data[i][0];
 						minutesSpan.innerHTML = Math.floor(data[i][1]/60);
@@ -98,8 +103,10 @@
 							minutesSpan.innerHTML = minutes;
 						}											
 					} else {
+						pBar.style.cssText = 'width:' +(100 - data[pointer][1]/data[pointer][3])+'%;';
 						minutesSpan.innerHTML = minutes;
-						secondsSpan.innerHTML = seconds;										
+						secondsSpan.innerHTML = seconds;	
+															
 					}
 					if (seconds < 10) {
 							seconds = "0"+seconds;
