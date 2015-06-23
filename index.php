@@ -8,7 +8,7 @@
 	<body>
 		<div id="countDownHolder">
 			<h1 id="activity">All done</h1>
-			<span id="minutes">0</span> : <span id="seconds">00</span>
+			<span id="minutes">0</span> : <span id="seconds">00</span><br />
 			<button name="stopstart" id="stopstart" disabled="disabled">Start</button>
 			<div class="meter">
 				<span id="progressBar" style="width: 0%;"></span>
